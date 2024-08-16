@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.gson.Gson
 
 @Composable
 fun RecipeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -58,17 +59,15 @@ fun CategoryScreen(navController: NavHostController, categories: List<Category>)
 
 @Composable
 fun CategoryItem(navController: NavHostController, category: Category) {
+    val gson = Gson()
+
     Column(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxSize()
             .clickable {
-                val encodedDescription = Uri.encode(category.strCategoryDescription)
-                val encodedCategory = Uri.encode(category.strCategory)
-                val encodedThumb = Uri.encode(category.strCategoryThumb)
-                navController.navigate(
-                    "detailScreen/${category.idCategory}/$encodedCategory/$encodedThumb/$encodedDescription"
-                )
+                val categoryJson = Uri.encode(gson.toJson(category))
+                navController.navigate("detailScreen/$categoryJson")
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -88,3 +87,4 @@ fun CategoryItem(navController: NavHostController, category: Category) {
         )
     }
 }
+

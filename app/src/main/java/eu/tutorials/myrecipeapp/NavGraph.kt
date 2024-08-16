@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.gson.Gson
 
 @Composable
 fun RecipeApp() {
@@ -14,23 +15,17 @@ fun RecipeApp() {
         composable("recipeScreen") {
             RecipeScreen(navController = navController)
         }
+        val gson = Gson()
+
         composable(
-            route = "detailScreen/{idCategory}/{strCategory}/{strCategoryThumb}/{strCategoryDescription}",
+            route = "detailScreen/{categoryJson}",
             arguments = listOf(
-                navArgument("idCategory") { type = NavType.StringType },
-                navArgument("strCategory") { type = NavType.StringType },
-                navArgument("strCategoryThumb") { type = NavType.StringType },
-                navArgument("strCategoryDescription") { type = NavType.StringType }
+                navArgument("categoryJson") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val category = Category(
-                idCategory = backStackEntry.arguments?.getString("idCategory") ?: "",
-                strCategory = backStackEntry.arguments?.getString("strCategory") ?: "",
-                strCategoryThumb = backStackEntry.arguments?.getString("strCategoryThumb") ?: "",
-                strCategoryDescription = backStackEntry.arguments?.getString("strCategoryDescription") ?: ""
-            )
+            val json = backStackEntry.arguments?.getString("categoryJson")
+            val category = gson.fromJson(json, Category::class.java)
             MealDetailScreen(category)
         }
-
     }
 }
